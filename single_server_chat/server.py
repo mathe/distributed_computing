@@ -1,4 +1,4 @@
-from bottle import run, get, post, static_file, error
+from bottle import run, get, post, static_file, view, error
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -38,9 +38,13 @@ def send_msg(f,to,msg):
 def error404(error):
     return 'Nothing here, sorry'
 
+@view("client")
+def render_index(msg):
+    return msg
+
 @get("/")
 def index():
-    return static_file("client.tpl", root=dir_path)
+    return render_index("Hello")
 
 chat = Chat()
 run(host="localhost", port=8080, debug = True)
