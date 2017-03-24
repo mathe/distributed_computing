@@ -3,10 +3,17 @@
     <title>Simple Chat.</title>
   </head>
   <body>
-    <h4>
-      %
-        {{title}}
-      %
+    <h4>      
+      {{title}}
+      %if len(history):
+        <table>
+          %for m in history:
+            <tr>
+              <th>{{m}}</th>
+            </tr>          
+          %end
+        </table>      
+      %end
     </h4>
     <hr>
     <form action="/send_msg" method="post">
