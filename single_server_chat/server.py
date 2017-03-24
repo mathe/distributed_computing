@@ -9,7 +9,7 @@ class Chat:
 
     def get_messages(self,f,to):
         if f in self.messages and to in self.messages[f]: return self.messages[f][to]        
-        return ["There is no message from " + f + " to " + to + "."]
+        return []
 
     def set_message(self,f,to,msg):
         if f not in self.messages: self.messages[f] = {}
@@ -19,13 +19,14 @@ class Chat:
 @get("/msg_history")
 def msg_history():
     global chat
-    history = []
     src = request.query.src
     dest = request.query.dest
     messages = chat.get_messages(src,dest)
-    for mi in messages: history.append(mi)
-    msg = "Messages sent from " + src + " to " + dest + ":"
-    return render_index(msg,history)
+    if len(messages):        
+        msg = "Messages sent from " + src + " to " + dest + ":"
+        return render_index(msg,messages)
+    msg = "There is no message from " + src + " to " + dest + "."
+    return render_index(msg)
 
 @post("/send_msg")
 def send_msg():
@@ -38,7 +39,7 @@ def send_msg():
 
 @error(404)
 def error404(error):
-    return 'Nothing here, sorry'
+    return "Nothing here, sorry."
 
 @view("client")
 def render_index(title = "",history = []):
