@@ -19,10 +19,13 @@ class Chat:
 @get("/msg_history")
 def msg_history():
     global chat
-    history = "" 
-    messages = chat.get_messages(request.query.src,request.query.dest)
-    for mi in messages: history += mi + "<br/>"
-    return history
+    history = []
+    src = request.query.src
+    dest = request.query.dest
+    messages = chat.get_messages(src,dest)
+    for mi in messages: history.append(mi)
+    msg = "Messages sent from " + src + " to " + dest + ":"
+    return render_index(msg,history)
 
 @post("/send_msg")
 def send_msg():
@@ -31,15 +34,15 @@ def send_msg():
     to = request.forms.get("to")
     msg = request.forms.get("message")        
     chat.set_message(f,to,msg)    
-    return render_index("Message sent!")
+    return render_index("Message Sent!")
 
 @error(404)
 def error404(error):
     return 'Nothing here, sorry'
 
 @view("client")
-def render_index(title):
-    return dict(title = title)
+def render_index(title = "",history = []):
+    return dict(title = title,history = history)
 
 @get("/")
 def index():
